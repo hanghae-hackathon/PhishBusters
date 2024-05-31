@@ -5,7 +5,7 @@ node_modules
 .idea
 
 # MacOS config
-DS_Store
+.DS_Store
 
 # Environment variables
 .env
