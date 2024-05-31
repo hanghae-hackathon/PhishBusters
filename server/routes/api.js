@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../database");
 const multer = require("multer");
-const { runPythonScript } = require("../functions/callAi");
+const { runPythonScript } = require("../functions/callAiModel");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
