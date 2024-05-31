@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 torch = "*"
+numpy = "*"
+transformers = "*"
+pandas = "*"
+scikit-learn = "*"
 
 [dev-packages]
 black = "*"

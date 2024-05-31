@@ -10,6 +10,8 @@ DS_Store
 # Environment variables
 .env
 
+server/.env
+
 # API keys
 key.*
 
