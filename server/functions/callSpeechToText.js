@@ -2,7 +2,7 @@ require("dotenv").config();
 const fs = require("fs");
 const speech = require("@google-cloud/speech");
 const client = new speech.SpeechClient({
-  projectId: 112146890057148407407,
+  projectId: process.env.GOOGLE_API_PROJECT_ID,
 });
 
 async function transcribeAudio() {
