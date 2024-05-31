@@ -1,4 +1,9 @@
 .idea
 DS_Store
+<<<<<<< HEAD
 
 client/node_modules
+=======
+.env
+node_modules
+>>>>>>> develop
