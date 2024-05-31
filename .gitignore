@@ -1,9 +1,14 @@
-.idea
-DS_Store
-<<<<<<< HEAD
-
-client/node_modules
-=======
-.env
+# Node.js dependencies
 node_modules
->>>>>>> develop
+
+# Webstorm config
+.idea
+
+# MacOS config
+DS_Store
+
+# Environment variables
+.env
+
+# API keys
+key.*

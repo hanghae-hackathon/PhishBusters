@@ -1,16 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../database");
+const multer = require("multer");
+const { runPythonScript } = require("../functions/callAiModel");
 
-// GET /api/users - Get all users
-router.get("/users", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM users");
-    res.status(200).json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.post("/phishingDetection", upload.single("audio"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
   }
+  runPythonScript(req.file.buffer)
+    .then((fileSize) => {
+      res.send({ fileSize });
+    })
+    .catch((error) => {
+      res.status(500).send({ error });
+    });
 });
 
 module.exports = router;
