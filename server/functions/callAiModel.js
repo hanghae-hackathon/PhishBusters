@@ -2,14 +2,11 @@ const { spawn } = require("child_process");
 const path = require("node:path");
 
 const aiRootPath = path.join(__dirname, "../../ai");
-const scriptPath = path.join(aiRootPath, "phishingDetector.py");
+const scriptPath = path.join(aiRootPath, "phishingDetector_combine.py");
 
-const runPythonScript = (fileBuffer) => {
+const runPythonScript = (text) => {
   return new Promise((resolve, reject) => {
-    const pythonProcess = spawn("python3", [scriptPath]);
-
-    pythonProcess.stdin.write(fileBuffer);
-    pythonProcess.stdin.end();
+    const pythonProcess = spawn("python3", [scriptPath, "--text", text]);
 
     let result = "";
 

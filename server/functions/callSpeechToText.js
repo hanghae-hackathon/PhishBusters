@@ -1,33 +1,40 @@
 require("dotenv").config();
-const fs = require("fs");
 const speech = require("@google-cloud/speech");
-const client = new speech.SpeechClient({
-  projectId: 112146890057148407407,
-});
+const path = require("node:path");
+const { GoogleAuth } = require("google-auth-library");
 
-async function transcribeAudio() {
-  const fileName = "../../ai/sample.wav";
-  const file = fs.readFileSync(fileName);
-  const audioBytes = file.toString("base64");
+async function speechToText(audioBuffer) {
+  const keyFilePath = path.join(__dirname, "../key.google.json");
+
+  const auth = new GoogleAuth({
+    keyFile: keyFilePath,
+    scopes: "https://www.googleapis.com/auth/cloud-platform",
+  });
+
+  const audioBytes = audioBuffer.toString("base64");
 
   const audio = {
     content: audioBytes,
   };
   const config = {
     encoding: "LINEAR16",
-    sampleRateHertz: 16000,
-    languageCode: "en-US",
+    // languageCode: "en-US",
+    languageCode: "ko-KR",
   };
+
   const request = {
     audio: audio,
     config: config,
   };
 
+  const client = new speech.SpeechClient({ auth });
+
   const [response] = await client.recognize(request);
   const transcription = response.results
     .map((result) => result.alternatives[0].transcript)
     .join("\n");
-  console.log(`Transcription: ${transcription}`);
+
+  return transcription;
 }
 
-transcribeAudio().catch(console.error);
+module.exports = { speechToText };
