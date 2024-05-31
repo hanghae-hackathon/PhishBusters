@@ -14,6 +14,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
     "react-router-dom": "^6.22.3",
+    "react-wave-stream": "^1.0.0",
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2"
   },
