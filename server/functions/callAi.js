@@ -1,8 +1,13 @@
 const { spawn } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
-const runPythonScript = (scriptPath, args = []) => {
+const runPythonScript = (scriptPath, fileBuffer) => {
     return new Promise((resolve, reject) => {
-        const pythonProcess = spawn('python3', [scriptPath, ...args]);
+        const pythonProcess = spawn('python3', [scriptPath]);
+
+        pythonProcess.stdin.write(fileBuffer);
+        pythonProcess.stdin.end();
 
         pythonProcess.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
@@ -22,7 +27,20 @@ const runPythonScript = (scriptPath, args = []) => {
     });
 };
 
-runPythonScript("../../ai/hello.py", ['--name', 'Alice'])
+const aiRootPath = path.join(__dirname, '../../ai');
+
+const audioFilePath = path.join(aiRootPath, 'sample.wav')
+
+if (!fs.existsSync(audioFilePath)) {
+    console.error('Audio file does not exist.');
+    process.exit(1);
+}
+
+
+const scriptPath =  path.join(aiRootPath, 'phishingDetector.py');
+const audioFileBuffer = fs.readFileSync(audioFilePath);
+
+runPythonScript(scriptPath, audioFileBuffer)
     .then((message) => {
         console.log(message);
     })
