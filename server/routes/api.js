@@ -26,13 +26,16 @@ router.post("/phishing_detection", upload.single("audio"), async (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
-  runPythonScript(req.file.buffer)
-    .then((fileSize) => {
-      res.send({ fileSize });
-    })
-    .catch((error) => {
-      res.status(500).send({ error });
-    });
+
+  try {
+    const transcript = await speechToText(req.file.buffer);
+    const result = await runPythonScript(transcript);
+
+    res.send({ result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err });
+  }
 });
 
 module.exports = router;
