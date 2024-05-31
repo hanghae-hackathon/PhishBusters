@@ -1,4 +1,14 @@
-.idea
-DS_Store
-.env
+# Node.js dependencies
 node_modules
+
+# Webstorm config
+.idea
+
+# MacOS config
+DS_Store
+
+# Environment variables
+.env
+
+# API keys
+key.*
