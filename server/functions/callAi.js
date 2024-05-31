@@ -1,49 +1,53 @@
-const { spawn } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+const { spawn } = require("child_process");
+const path = require("node:path");
 
-const runPythonScript = (scriptPath, fileBuffer) => {
-    return new Promise((resolve, reject) => {
-        const pythonProcess = spawn('python3', [scriptPath]);
+const aiRootPath = path.join(__dirname, "../../ai");
+const scriptPath = path.join(aiRootPath, "phishingDetector.py");
 
-        pythonProcess.stdin.write(fileBuffer);
-        pythonProcess.stdin.end();
+const runPythonScript = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const pythonProcess = spawn("python3", [scriptPath]);
 
-        pythonProcess.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
+    pythonProcess.stdin.write(fileBuffer);
+    pythonProcess.stdin.end();
 
-        pythonProcess.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
-        });
+    let result = "";
 
-        pythonProcess.on('close', (code) => {
-            if (code !== 0) {
-                reject(`Python script exited with code ${code}`);
-            } else {
-                resolve(`Python script completed successfully with code ${code}`);
-            }
-        });
+    pythonProcess.stdout.on("data", (data) => {
+      result += data.toString();
     });
+
+    pythonProcess.stderr.on("data", (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
+    pythonProcess.on("close", (code) => {
+      if (code !== 0) {
+        reject(`Python script exited with code ${code}`);
+      } else {
+        resolve(result.trim());
+      }
+    });
+  });
 };
 
-const aiRootPath = path.join(__dirname, '../../ai');
+module.exports = { runPythonScript };
 
-const audioFilePath = path.join(aiRootPath, 'sample.wav')
-
-if (!fs.existsSync(audioFilePath)) {
-    console.error('Audio file does not exist.');
-    process.exit(1);
-}
-
-
-const scriptPath =  path.join(aiRootPath, 'phishingDetector.py');
-const audioFileBuffer = fs.readFileSync(audioFilePath);
-
-runPythonScript(scriptPath, audioFileBuffer)
-    .then((message) => {
-        console.log(message);
-    })
-    .catch((error) => {
-        console.error(error);
-    });
+//
+// const audioFilePath = path.join(aiRootPath, 'sample.wav')
+//
+// if (!fs.existsSync(audioFilePath)) {
+//     console.error('Audio file does not exist.');
+//     process.exit(1);
+// }
+//
+//
+// const audioFileBuffer = fs.readFileSync(audioFilePath);
+//
+// runPythonScript(scriptPath, audioFileBuffer)
+//     .then((message) => {
+//         console.log(message);
+//     })
+//     .catch((error) => {
+//         console.error(error);
+//     });
