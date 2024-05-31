@@ -1,13 +1,24 @@
 import argparse
 
-def main():
-    parser = argparse.ArgumentParser(description='Process some name.')
-    parser.add_argument('name', type=str, help='Name to greet')
 
+def get_args():
+    """get the command line arguments"""
+    parser = argparse.ArgumentParser(
+        description="Hello name",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("-n", "--name", metavar="str", type=str, default=None)
     args = parser.parse_args()
+    return args
 
-    name = args.name
-    print(f'Hello {name}')
+
+def main():
+    """Dance with Jazz~~"""
+    args = get_args()
+
+    print(f"Hello {args.name}")
+
 
 if __name__ == "__main__":
+
     main()
