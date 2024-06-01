@@ -46,7 +46,7 @@ const Result = () => {
     <Container>
       <BlackScreen />
       <Box>
-        <CircularProgress progress={`${score}0`} />
+        <CircularProgress progress={score * 10} />
         {result.model_result === '일반' ? (
           <h3>해당 통화는 의심스러운 활동이 감지되지 않았습니다.</h3>
         ) : (
@@ -58,8 +58,8 @@ const Result = () => {
           ))}
         </SuspicionBox>
       </Box>
-      <ButtonBox buttonstate={progress >= 30 ? 0 : 1}>
-        {progress >= 30 && <Button color='#EB5544'>신고</Button>}
+      <ButtonBox buttonstate={score >= 3 ? 0 : 1}>
+        {score >= 3 && <Button color='#EB5544'>신고</Button>}
         <Button onClick={goToHome} color='#67CE68'>
           확인
         </Button>
@@ -81,23 +81,30 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 auto;
-
-  margin-top: 2rem;
+  margin: 70px auto;
+  padding: 0 1.5rem;
 
   h3 {
-    font-size: 1rem;
-    color: white;
+    font-size: 1.1rem;
+    display: none;
     margin-top: 1rem;
     font-weight: bold;
     padding: 0 1rem;
+    margin-top: 70px;
   }
 
   p {
-    font-size: 1rem;
-    margin-bottom: 0.1rem;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
     color: white;
     font-weight: bold;
+    line-height: 2rem;
+  }
+  p:nth-child(1) {
+    font-size: 1.5rem;
+    line-height: 1rem;
+    font-weight: bold;
+    color: #ffe100;
   }
 `;
 
@@ -106,7 +113,6 @@ const SuspicionBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-
   padding: 0 1rem;
 `;
 
@@ -125,6 +131,8 @@ const Button = styled.button`
   background-color: ${(props) => props.color};
   border-radius: 20%;
   color: white;
+  font-weight: bold;
+  font-size: 20px;
 `;
 
 export default Result;

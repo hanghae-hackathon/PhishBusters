@@ -39,15 +39,6 @@ const Home = () => {
         {month + 1}월 {date}일 {dayList[day]}요일
       </Day>
       <Time>{time}</Time>
-
-      <Bottom>
-        <IconBackGround>
-          <IoIosFlashlight />
-        </IconBackGround>
-        <IconBackGround>
-          <IoIosCamera />
-        </IconBackGround>
-      </Bottom>
     </HomeBox>
   );
 };

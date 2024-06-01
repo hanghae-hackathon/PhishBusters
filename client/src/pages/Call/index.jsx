@@ -18,6 +18,20 @@ const Call = () => {
   const [minutes, setMinutes] = useState(0);
 
   let timer = useRef();
+  let audioRef = useRef(null);
+
+  const playAudio = () => {
+    audioRef.current.play();
+  };
+
+  const stopAudio = () => {
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+  };
+
+  useEffect(() => {
+    playAudio();
+  }, []);
 
   useEffect(() => {
     if (isRoading) {
@@ -40,6 +54,8 @@ const Call = () => {
     timeslice: 1000,
     startCallback: (e) => {
       console.log('succ start', e);
+
+      stopAudio();
 
       timer.current = setInterval(() => {
         setSeconds((prevSeconds) => {
@@ -110,6 +126,11 @@ const Call = () => {
 
   return (
     <Container isReceive={isReceive} isRoading={isRoading}>
+      <audio ref={audioRef}>
+        <source src='src/assets/audio/ring_ios.mp3' type='audio/mpeg' />
+        Your browser does not support the audio element.
+      </audio>
+
       <>
         {isReceive ? (
           <CallBox>
