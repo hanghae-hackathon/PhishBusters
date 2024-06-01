@@ -91,8 +91,7 @@ def combined_predict(text):
 
 def get_args():
     parser = argparse.ArgumentParser(
-                                    description="Hello name",
-                                    # description = test_sentence_final,
+                                    description="input text",
                                     formatter_class = argparse.ArgumentDefaultsHelpFormatter,
                                     )
     parser.add_argument("-t", "--text", metavar="str", type=str, default=None)
