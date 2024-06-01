@@ -23,8 +23,39 @@ Our mission is to leverage AI technology to eliminate phishing phone calls, crea
 
 The front-end part of the project is responsible for the user interface and user experience. It includes:
 
-- **BlahBlah**: BlahBlah~~~
+**UI Design**: Development of visually simple and user-friendly design.
 
+- **User Experience**: Experience design aimed at providing an environment where users can easily interact.
+- **Voice Recording**: Utilizing the Web Audio API to record user's voice and transmit it to the server.
+- **Mobile Compatibility**: Development and testing considering compatibility on mobile platforms.
+
+1. **Navigate to the Client Folder**
+
+   ```bash
+   cd client
+   ```
+
+2. **Install Node.js**:
+   - Install Node.js and dependencies:
+   ```bash
+   brew install node
+   ```
+3. **Install yarn**
+   ```bash
+   brew install yarn --ignore-dependencies
+   ```
+4. **Install dependencies**:
+   ```bash
+   yarn install
+   ```
+5. **Start Client Server**:
+   ```bash
+   yarn dev
+   ```
+6. **View In The Browser**:
+   ```bash
+   localhost:5173
+   ```
 
 ### Back-End (BE with AI)
 
@@ -36,6 +67,7 @@ The back-end part of the project handles the core functionalities and data proce
 - **Predict Phishing Calls**: Using trained models on phishing call datasets to predict and identify scam calls.
 
 1. **Navigate to the Server Folder**
+
    ```bash
    cd server
    ```
@@ -54,18 +86,18 @@ The back-end part of the project handles the core functionalities and data proce
    - Install Pipenv and dependencies:
    ```bash
    pip3 install pipenv
-   pipenv install 
+   pipenv install
    ```
 4. **Run Python Environment**:
    ```bash
    pipenv shell
-   ```   
+   ```
 5. **Start Server**:
    ```bash
    npm run server:dev
-   ```      
----
+   ```
 
+---
 
 This project is a result of a hackathon supported by Hanghae99.
 
