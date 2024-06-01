@@ -1,8 +1,9 @@
-import styled from 'styled-components';
-import { AddPeople, AudioMuted, Keypad, Message, Phone, Sound, VideoPlus, Voicemail } from '../../components/icons';
 import { useEffect, useState } from 'react';
+import AudioAnalyser from 'react-audio-analyser';
+import { AddPeople, AudioMuted, Keypad, Message, Phone, Sound, VideoPlus, Voicemail } from '../../components/icons';
+import styled from 'styled-components';
 
-const Call2 = () => {
+const Calling = ({ controlAudio, audioProps }) => {
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
 
@@ -29,6 +30,7 @@ const Call2 = () => {
         </p>
         <h3>010-1234-5678</h3>
       </CallBox>
+      <AudioAnalyser {...audioProps}></AudioAnalyser>
       <MessageBox margin='auto'>
         <TextBox>
           <Sound />
@@ -53,7 +55,7 @@ const Call2 = () => {
           <Text>Keypad</Text>
         </TextBox>
         <TextBox>
-          <Phone color='red' />
+          <Phone color='red' onClick={() => controlAudio('inactive')} />
           <Text>End</Text>
         </TextBox>
       </PhoneBox>
@@ -118,4 +120,4 @@ const TextBox = styled.div`
 const Text = styled.p`
   color: white;
 `;
-export default Call2;
+export default Calling;

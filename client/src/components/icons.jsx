@@ -24,9 +24,9 @@ export const Message = () => {
   );
 };
 
-export const Phone = ({ color }) => {
+export const Phone = ({ color, onClick }) => {
   return (
-    <PhoneBox color={color}>
+    <PhoneBox className='btn' color={color} onClick={onClick}>
       <RotatedIoCall rotate={color === 'red' ? 0 : 1} />
     </PhoneBox>
   );
@@ -107,7 +107,7 @@ const MessageBox = styled.div`
   cursor: pointer;
 `;
 
-const PhoneBox = styled.div`
+const PhoneBox = styled.button`
   background-color: ${(props) => (props.color === 'red' ? '#EB5544' : '#67CE68')};
   border-radius: 100%;
   padding: 0.5rem;

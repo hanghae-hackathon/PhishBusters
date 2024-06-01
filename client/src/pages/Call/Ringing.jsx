@@ -1,11 +1,12 @@
-import styled from 'styled-components';
+import AudioAnalyser from 'react-audio-analyser';
 import { Message, Phone, Voicemail } from '../../components/icons';
+import styled from 'styled-components';
 
-const Ringing = () => {
+const Ringing = ({ setIsReceive, controlAudio, audioProps }) => {
   return (
     <Container>
       <CallBox>
-        <p>휴대전화</p>
+        <p>mobile</p>
         <h3>010-1234-5678</h3>
       </CallBox>
       <MessageBox margin='auto'>
@@ -24,7 +25,14 @@ const Ringing = () => {
           <Text>Decline</Text>
         </TextBox>
         <TextBox>
-          <Phone color='green' />
+          <Phone
+            color='green'
+            onClick={() => {
+              setIsReceive(true);
+              controlAudio('recording');
+              console.log('recording');
+            }}
+          />
           <Text>Accept</Text>
         </TextBox>
       </PhoneBox>
