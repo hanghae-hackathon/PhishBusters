@@ -45,13 +45,15 @@ router.post("/phishing_detection", upload.single("audio"), async (req, res) => {
 
   try {
     const transcript = await speechToText(req.file.buffer);
-    const model_result = await runPythonScript(transcript);
+
+    // 모델 정확도 향상 후 tobe-implement
+    // const model_result = await runPythonScript(transcript);
 
     const gpt_result = await getOpenAIResponse(transcript);
 
     res.send({
       transcript,
-      model_result,
+      model_result: null,
       chat_gpt: gpt_result[0].message.content,
     });
   } catch (err) {

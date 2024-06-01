@@ -29,8 +29,8 @@ class WeightedTfidfVectorizer(BaseEstimator, TransformerMixin):
                 X_tfidf[:, idx] *= self.weight_dict[word]
         return X_tfidf
 
-data = pd.read_csv('../ai/dataset.csv')
-weights_df = pd.read_csv('../ai/coefficients.csv')
+data = pd.read_csv('./dataset.csv')
+weights_df = pd.read_csv('./coefficients.csv')
 
 # TF-IDF 모델
 X_train, X_test, y_train, y_test = train_test_split(data['Transcript'], data['Label'], test_size=0.2, random_state=42)
@@ -59,10 +59,10 @@ class CustomTextDataset(Dataset):
 def predict(text):
     dataset = CustomTextDataset([text], tokenizer)
     dataloader = DataLoader(dataset, batch_size=1)
-
+    
     model.eval()
     classifier.eval()
-
+    
     with torch.no_grad():
         for batch in dataloader:
             input_ids = batch['input_ids'].to(device)
@@ -71,7 +71,7 @@ def predict(text):
             pooled_output = outputs.pooler_output
             logits = classifier(pooled_output)
             prediction = torch.argmax(logits, dim=1)
-
+            
             return "보이스피싱" if prediction.item() == 1 else "일반"
 
 def combined_predict(text):
@@ -81,28 +81,39 @@ def combined_predict(text):
     # TF-IDF 모델
     tfidf_prediction = "보이스피싱" if pipeline_weighted.predict([text])[0] == 1 else "일반"
 
-    bert_weight = 0.5
-    tfidf_weight = 0.5
+    bert_weight = 0.8
+    tfidf_weight = 0.2
 
-    if bert_prediction == "보이스피싱" or (tfidf_prediction == "보이스피싱" and bert_prediction == "보이스피싱"):
-        return "보이스피싱"
+    # if bert_prediction == "보이스피싱" or (tfidf_prediction == "보이스피싱" and bert_prediction == "보이스피싱"):
+    #     return True
+    # else:
+    #     return False
+    
+    if bert_prediction == "보이스피싱" and tfidf_prediction == "보이스피싱":
+        return True
+    elif bert_prediction == "보이스피싱" and tfidf_prediction == "일반":
+        return True if bert_weight > tfidf_weight else False
+    elif bert_prediction == "일반" and tfidf_prediction == "보이스피싱":
+        return True if tfidf_weight > bert_weight else False
     else:
-        return "일반"
-
+        return False
+    
 def get_args():
     parser = argparse.ArgumentParser(
-                                    description="input text",
+                                    description="Hello name",
+                                    # description = test_sentence_final,
                                     formatter_class = argparse.ArgumentDefaultsHelpFormatter,
                                     )
     parser.add_argument("-t", "--text", metavar="str", type=str, default=None)
     args = parser.parse_args()
-
+    
     return args
 
 if __name__ == "__main__":
     args = get_args()
     if args.text:
         result = combined_predict(args.text)
+        print(type(result))
         print(result)
     else:
         print("No text provided for analysis.")
