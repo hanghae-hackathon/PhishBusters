@@ -34,7 +34,7 @@ router.post("/phishing_detection", upload.single("audio"), async (req, res) => {
     res.send({ result });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ error: err });
+    res.status(500).send({ error: err?.details });
   }
 });
 
