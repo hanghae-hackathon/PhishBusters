@@ -85,9 +85,9 @@ def combined_predict(text):
     tfidf_weight = 0.7
 
     if bert_prediction == "보이스피싱" or (tfidf_prediction == "보이스피싱" and bert_prediction == "보이스피싱"):
-        return "보이스피싱"
+        return True
     else:
-        return "일반"
+        return False
 
 def get_args():
     parser = argparse.ArgumentParser(
@@ -104,6 +104,7 @@ if __name__ == "__main__":
     args = get_args()
     if args.text:
         result = combined_predict(args.text)
+        print(type(result))
         print(result)
     else:
         print("No text provided for analysis.")
