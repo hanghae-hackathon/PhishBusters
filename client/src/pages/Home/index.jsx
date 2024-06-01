@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { IoIosFlashlight } from 'react-icons/io';
 import { IoIosCamera } from 'react-icons/io';
-import { AddPeople, AudioMuted, Call, Keypad, Message, Sound, VideoPlus, Voicemail } from '../../components/icons';
 
 const dayList = ['일', '월', '화', '수', '목', '금', '토'];
 const Home = () => {
@@ -31,14 +30,6 @@ const Home = () => {
       </Day>
       <Time>{time}</Time>
 
-      <Voicemail />
-      <Message />
-      <Call />
-      <Keypad />
-      <AudioMuted />
-      <AddPeople />
-      <VideoPlus />
-      <Sound />
       <Bottom>
         <IconBackGround>
           <IoIosFlashlight />
