@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AudioAnalyser from 'react-audio-analyser';
 import { postWithFormData } from '../../api';
@@ -17,20 +17,17 @@ const Call = () => {
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds >= 59) {
-          setMinutes((prevMinutes) => prevMinutes + 1);
-          return 0;
-        } else {
-          return prevSeconds + 1;
-        }
-      });
-    }, 1000);
+  let timer = useRef();
 
-    return () => clearInterval(interval);
-  }, []);
+  useEffect(() => {
+    if (isRoading) {
+      clearInterval(timer.current);
+    }
+
+    return () => {
+      clearInterval(timer.current);
+    };
+  }, [isRoading]);
 
   const controlAudio = (status) => {
     setStatus(status);
@@ -43,6 +40,17 @@ const Call = () => {
     timeslice: 1000,
     startCallback: (e) => {
       console.log('succ start', e);
+
+      timer.current = setInterval(() => {
+        setSeconds((prevSeconds) => {
+          if (prevSeconds >= 59) {
+            setMinutes((prevMinutes) => prevMinutes + 1);
+            return 0;
+          } else {
+            return prevSeconds + 1;
+          }
+        });
+      }, 1000);
     },
     pauseCallback: (e) => {
       console.log('succ pause', e);
@@ -85,12 +93,14 @@ const Call = () => {
       const res = await postWithFormData('phishing_detection', formData);
 
       if (res.status === 200) {
-        alert(res.data.result);
+        localStorage.setItem('result', JSON.stringify(res.data.result));
       } else {
+        localStorage.removeItem('result');
         console.error('서버로부터 오류 응답을 받았습니다.');
         console.log(res);
       }
     } catch (error) {
+      localStorage.removeItem('result');
       console.error('오류 발생:', error);
     } finally {
       navigate('/result');
@@ -116,7 +126,9 @@ const Call = () => {
         <>
           <AudioAnalyser {...audioProps}>
             {isRoading ? (
-              <>로딩</>
+              <>
+                <img src='src/assets/gif/loading.gif' alt='loading_gif' />
+              </>
             ) : (
               <>
                 {isReceive ? (
@@ -144,7 +156,6 @@ const Call = () => {
                         <Keypad />
                         <Text>Keypad</Text>
                       </TextBox>
-
                       <TextBox>
                         <Phone
                           color='red'
@@ -204,6 +215,11 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  img {
+    width: 100px;
+    margin: 0 auto;
+  }
 
   .audioContainer {
     display: flex;
