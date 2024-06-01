@@ -6,6 +6,8 @@ import { BiSolidVideoPlus } from 'react-icons/bi';
 import { AiOutlineSound } from 'react-icons/ai';
 import { BiSolidMessageRounded } from 'react-icons/bi';
 import { MdOutlineVoicemail } from 'react-icons/md';
+import { IoIosBatteryFull } from 'react-icons/io';
+import { IoIosWifi } from 'react-icons/io';
 import styled from 'styled-components';
 
 export const Voicemail = () => {
@@ -72,6 +74,14 @@ export const Sound = () => {
   );
 };
 
+export const Battery = () => {
+  return <IosBattery />;
+};
+
+export const Wifi = () => {
+  return <IosWifi />;
+};
+
 const IconBox = styled.div`
   background-color: rgba(0, 0, 0, 0.26);
   border-radius: 100%;
@@ -127,4 +137,14 @@ const PhoneBox = styled.button`
 
 const RotatedIoCall = styled(IoCall)`
   transform: ${(props) => (props.rotate === 0 ? 'rotate(135deg)' : 'rotate(0deg)')};
+`;
+
+const IosWifi = styled(IoIosWifi)`
+  font-size: 1.5rem;
+  color: white;
+`;
+
+const IosBattery = styled(IoIosBatteryFull)`
+  font-size: 1.5rem;
+  color: white;
 `;

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { IoIosFlashlight } from 'react-icons/io';
 import { IoIosCamera } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
+import BlackScreen from '../../components/BlackScreen';
 
 const dayList = ['일', '월', '화', '수', '목', '금', '토'];
 const Home = () => {
@@ -13,6 +15,8 @@ const Home = () => {
   const [day, setDay] = useState(new Date().getDay());
   const [date, setDate] = useState(new Date().getDate());
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     // console.log(new Date());
     const interval = setInterval(() => {
@@ -22,9 +26,15 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const onClickBackGround = () => {
+    setTimeout(() => {
+      navigate('/ringing');
+    }, 1000);
+  };
+
   return (
-    <HomeBox>
-      <BlackScreen></BlackScreen>
+    <HomeBox onClick={onClickBackGround}>
+      <BlackScreen />
       <Day>
         {month + 1}월 {date}일 {dayList[day]}요일
       </Day>
@@ -47,21 +57,6 @@ const HomeBox = styled.div`
   background-image: url(/src/assets/images/background/home.png);
   background-size: cover;
   overflow: hidden;
-`;
-
-const BlackScreen = styled.div`
-  background-color: rgba(0, 0, 0, 1);
-  width: 6rem;
-  height: 2rem;
-
-  border-top-right-radius: 40%;
-  border-bottom-right-radius: 40%;
-
-  border-top-left-radius: 40%;
-  border-bottom-left-radius: 40%;
-
-  margin: 0 auto;
-  margin-top: 2vh;
 `;
 
 const Day = styled.h1`
