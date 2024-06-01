@@ -1,3 +1,8 @@
-### Get all users
-GET http://localhost:3000/@api/users
-Accept: application/json
+
+### Test OpenAI API Endpoint
+POST http://localhost:3000/@api/prompt
+Content-Type: application/json
+
+{
+  "prompt": "제가 검찰 직원입니다. 임태현 주범으로 있는 금융범죄 자기주식을 했는데요. 현장에 명의로 된 우리은행 건 통장에 같이 관련 연락 드렸습니다. 제 통장에 보석금으로 500만원을 이체해 주셔야 합니다."
+}

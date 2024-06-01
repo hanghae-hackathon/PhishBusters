@@ -19,6 +19,7 @@ class WeightedTfidfVectorizer(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y=None):
         self.tfidf.fit(X)
+        
         return self
 
     def transform(self, X):
@@ -27,6 +28,7 @@ class WeightedTfidfVectorizer(BaseEstimator, TransformerMixin):
         for word, idx in self.tfidf.vocabulary_.items():
             if word in self.weight_dict:
                 X_tfidf[:, idx] *= self.weight_dict[word]
+                
         return X_tfidf
 
 data = pd.read_csv('./dataset.csv')
@@ -38,7 +40,7 @@ pipeline_weighted = Pipeline([('weighted_tfidf', WeightedTfidfVectorizer(weights
                               ('log_reg', LogisticRegression())])
 pipeline_weighted.fit(X_train, y_train)
 
-# BERT 모델
+# KoBERT 모델
 model = BertModel.from_pretrained('monologg/kobert')
 tokenizer = BertTokenizer.from_pretrained('monologg/kobert')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -70,34 +72,33 @@ def predict(text):
             outputs = model(input_ids, attention_mask=attention_mask)
             pooled_output = outputs.pooler_output
             logits = classifier(pooled_output)
-            prediction = torch.argmax(logits, dim=1)
+            probabilities = torch.softmax(logits, dim=1)
+            # prediction = torch.argmax(logits, dim=1)
+            prediction = torch.argmax(probabilities, dim=1)
+            voice_phishing_prob = probabilities[0][1].item() * 100
+            result_label = "보이스피싱" if prediction.item() == 1 else "일반"
+            # result_prob = probabilities[0][prediction.item()].item() * 100
+            # print(voice_phishing_prob)
+            # print(result_label)
+            # print(result_prob)
             
-            return "보이스피싱" if prediction.item() == 1 else "일반"
+            return result_label, voice_phishing_prob
 
 def combined_predict(text):
-    # BERT 모델
+    # KoBERT 모델
     bert_prediction = predict(text)
 
     # TF-IDF 모델
     tfidf_prediction = "보이스피싱" if pipeline_weighted.predict([text])[0] == 1 else "일반"
 
-    bert_weight = 0.8
-    tfidf_weight = 0.2
+    bert_weight = 0.3
+    tfidf_weight = 0.7
 
-    # if bert_prediction == "보이스피싱" or (tfidf_prediction == "보이스피싱" and bert_prediction == "보이스피싱"):
-    #     return True
-    # else:
-    #     return False
-    
-    if bert_prediction == "보이스피싱" and tfidf_prediction == "보이스피싱":
+    if bert_prediction == "보이스피싱" or (tfidf_prediction == "보이스피싱" and bert_prediction == "보이스피싱"):
         return True
-    elif bert_prediction == "보이스피싱" and tfidf_prediction == "일반":
-        return True if bert_weight > tfidf_weight else False
-    elif bert_prediction == "일반" and tfidf_prediction == "보이스피싱":
-        return True if tfidf_weight > bert_weight else False
     else:
         return False
-    
+
 def get_args():
     parser = argparse.ArgumentParser(
                                     description="Hello name",
@@ -112,8 +113,10 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
     if args.text:
+        bert_result_label, bert_voice_phishing_prob = predict(args.text)
         result = combined_predict(args.text)
-        print(type(result))
+        if result == True:
+            print(bert_voice_phishing_prob)
         print(result)
     else:
         print("No text provided for analysis.")

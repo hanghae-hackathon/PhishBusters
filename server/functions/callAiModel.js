@@ -29,22 +29,3 @@ const runPythonScript = (text) => {
 };
 
 module.exports = { runPythonScript };
-
-//
-// const audioFilePath = path.join(aiRootPath, 'sample.wav')
-//
-// if (!fs.existsSync(audioFilePath)) {
-//     console.error('Audio file does not exist.');
-//     process.exit(1);
-// }
-//
-//
-// const audioFileBuffer = fs.readFileSync(audioFilePath);
-//
-// runPythonScript(scriptPath, audioFileBuffer)
-//     .then((message) => {
-//         console.log(message);
-//     })
-//     .catch((error) => {
-//         console.error(error);
-//     });

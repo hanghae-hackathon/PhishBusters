@@ -3,7 +3,6 @@ import numpy as np
 from transformers import BertModel, BertTokenizer
 from torch.utils.data import DataLoader, Dataset
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
@@ -23,7 +22,6 @@ class WeightedTfidfVectorizer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         X_tfidf = self.tfidf.transform(X)
-        # 각 단어에 대한 가중치 적용
         for word, idx in self.tfidf.vocabulary_.items():
             if word in self.weight_dict:
                 X_tfidf[:, idx] *= self.weight_dict[word]
@@ -32,11 +30,12 @@ class WeightedTfidfVectorizer(BaseEstimator, TransformerMixin):
 data = pd.read_csv('./dataset.csv')
 weights_df = pd.read_csv('./coefficients.csv')
 
-# TF-IDF 모델
-X_train, X_test, y_train, y_test = train_test_split(data['Transcript'], data['Label'], test_size=0.2, random_state=42)
-pipeline_weighted = Pipeline([('weighted_tfidf', WeightedTfidfVectorizer(weights_df)),
-                              ('log_reg', LogisticRegression())])
-pipeline_weighted.fit(X_train, y_train)
+# 전체 데이터를 사용한 TF-IDF 모델
+pipeline_weighted = Pipeline([
+    ('weighted_tfidf', WeightedTfidfVectorizer(weights_df)),
+    ('log_reg', LogisticRegression())
+])
+pipeline_weighted.fit(data['Transcript'], data['Label'])
 
 # BERT 모델
 model = BertModel.from_pretrained('monologg/kobert')
@@ -59,10 +58,8 @@ class CustomTextDataset(Dataset):
 def predict(text):
     dataset = CustomTextDataset([text], tokenizer)
     dataloader = DataLoader(dataset, batch_size=1)
-    
     model.eval()
     classifier.eval()
-    
     with torch.no_grad():
         for batch in dataloader:
             input_ids = batch['input_ids'].to(device)
@@ -71,24 +68,14 @@ def predict(text):
             pooled_output = outputs.pooler_output
             logits = classifier(pooled_output)
             prediction = torch.argmax(logits, dim=1)
-            
             return "보이스피싱" if prediction.item() == 1 else "일반"
 
 def combined_predict(text):
-    # BERT 모델
     bert_prediction = predict(text)
-
-    # TF-IDF 모델
     tfidf_prediction = "보이스피싱" if pipeline_weighted.predict([text])[0] == 1 else "일반"
-
     bert_weight = 0.8
     tfidf_weight = 0.2
 
-    # if bert_prediction == "보이스피싱" or (tfidf_prediction == "보이스피싱" and bert_prediction == "보이스피싱"):
-    #     return True
-    # else:
-    #     return False
-    
     if bert_prediction == "보이스피싱" and tfidf_prediction == "보이스피싱":
         return True
     elif bert_prediction == "보이스피싱" and tfidf_prediction == "일반":
@@ -97,23 +84,20 @@ def combined_predict(text):
         return True if tfidf_weight > bert_weight else False
     else:
         return False
-    
+
 def get_args():
     parser = argparse.ArgumentParser(
-                                    description="Hello name",
-                                    # description = test_sentence_final,
-                                    formatter_class = argparse.ArgumentDefaultsHelpFormatter,
-                                    )
+        description="Detects voice phishing using a combination of BERT and TF-IDF models",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument("-t", "--text", metavar="str", type=str, default=None)
     args = parser.parse_args()
-    
     return args
 
 if __name__ == "__main__":
     args = get_args()
     if args.text:
         result = combined_predict(args.text)
-        print(type(result))
-        print(result)
+        print("보이스피싱" if result else "일반")
     else:
         print("No text provided for analysis.")
