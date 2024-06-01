@@ -5,6 +5,7 @@ import Call from './pages/Call';
 import '../src/styles/fonts/Pretendard-GOV/pretendard.css';
 import Ringing from './pages/Ringing';
 import Call2 from './pages/Call2';
+import Result from './pages/Result';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/Call' element={<Call />} />
         <Route path='/ringing' element={<Ringing />} />
         <Route path='/call2' element={<Call2 />} />
+        <Route path='/result' element={<Result />} />
       </Routes>
     </div>
   );
