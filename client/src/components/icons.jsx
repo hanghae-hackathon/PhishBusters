@@ -1,35 +1,36 @@
 import { IoCall } from 'react-icons/io5';
 import { AiOutlineAudioMuted } from 'react-icons/ai';
 import { IoIosKeypad } from 'react-icons/io';
-import { IoIosWifi } from 'react-icons/io';
 import { IoPersonAddSharp } from 'react-icons/io5';
 import { BiSolidVideoPlus } from 'react-icons/bi';
 import { AiOutlineSound } from 'react-icons/ai';
-import { TbMessageCircle2 } from 'react-icons/tb';
+import { BiSolidMessageRounded } from 'react-icons/bi';
 import { MdOutlineVoicemail } from 'react-icons/md';
+import { IoIosBatteryFull } from 'react-icons/io';
+import { IoIosWifi } from 'react-icons/io';
 import styled from 'styled-components';
 
 export const Voicemail = () => {
   return (
-    <IconBox>
+    <MessageBox>
       <MdOutlineVoicemail />
-    </IconBox>
+    </MessageBox>
   );
 };
 
 export const Message = () => {
   return (
-    <IconBox>
-      <TbMessageCircle2 />
-    </IconBox>
+    <MessageBox>
+      <BiSolidMessageRounded />
+    </MessageBox>
   );
 };
 
-export const Call = () => {
+export const Phone = ({ color, onClick }) => {
   return (
-    <IconBox>
-      <IoCall />
-    </IconBox>
+    <PhoneBox className='btn' color={color} onClick={onClick}>
+      <RotatedIoCall rotate={color === 'red' ? 0 : 1} />
+    </PhoneBox>
   );
 };
 
@@ -73,6 +74,14 @@ export const Sound = () => {
   );
 };
 
+export const Battery = () => {
+  return <IosBattery />;
+};
+
+export const Wifi = () => {
+  return <IosWifi />;
+};
+
 const IconBox = styled.div`
   background-color: rgba(0, 0, 0, 0.26);
   border-radius: 100%;
@@ -89,4 +98,53 @@ const IconBox = styled.div`
   font-size: 2rem;
 
   cursor: pointer;
+`;
+const MessageBox = styled.div`
+  background-color: rgba(0, 0, 0, 0.26);
+  border-radius: 100%;
+  padding: 0.5rem;
+
+  width: 3rem;
+  height: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 1.5rem;
+
+  cursor: pointer;
+`;
+
+const PhoneBox = styled.button`
+  background-color: ${(props) => (props.color === 'red' ? '#EB5544' : '#67CE68')};
+  border-radius: 100%;
+  padding: 0.5rem;
+
+  width: 4rem;
+  height: 4rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 2rem;
+
+  cursor: pointer;
+`;
+
+const RotatedIoCall = styled(IoCall)`
+  transform: ${(props) => (props.rotate === 0 ? 'rotate(135deg)' : 'rotate(0deg)')};
+`;
+
+const IosWifi = styled(IoIosWifi)`
+  font-size: 1.5rem;
+  color: white;
+`;
+
+const IosBattery = styled(IoIosBatteryFull)`
+  font-size: 1.5rem;
+  color: white;
 `;

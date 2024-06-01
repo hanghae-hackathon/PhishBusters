@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const serverUrl = `http://localhost:1234/api/`;
+export const serverUrl = `http://192.168.1.160:3000/@api/`;
 
 async function get(params) {
   return axios.get(serverUrl + params, {
@@ -46,13 +46,12 @@ async function del(params, data) {
   });
 }
 
-async function patchWithFormData(params, data) {
-  return axios.patch(serverUrl + params, data, {
+async function postWithFormData(params, data) {
+  return axios.post(serverUrl + params, data, {
     headers: {
-      'Content-Type': 'audio',
-      Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      'Content-Type': 'multipart/form-data',
     },
   });
 }
 
-export { get, patch, post, put, del, patchWithFormData };
+export { get, patch, post, put, del, postWithFormData };
