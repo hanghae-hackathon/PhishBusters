@@ -28,7 +28,7 @@ const Home = () => {
 
   const onClickBackGround = () => {
     setTimeout(() => {
-      navigate('/ringing');
+      navigate('/call');
     }, 1000);
   };
 

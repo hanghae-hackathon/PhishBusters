@@ -93,7 +93,8 @@ const Call = () => {
       const res = await postWithFormData('phishing_detection', formData);
 
       if (res.status === 200) {
-        localStorage.setItem('result', JSON.stringify(res.data.result));
+        localStorage.setItem('result', JSON.stringify(res.data));
+        console.log(res, 'res');
       } else {
         localStorage.removeItem('result');
         console.error('서버로부터 오류 응답을 받았습니다.');

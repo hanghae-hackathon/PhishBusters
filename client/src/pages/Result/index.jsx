@@ -3,12 +3,16 @@ import { AddPeople, AudioMuted, Keypad, Message, Phone, Sound, VideoPlus, Voicem
 import { useEffect, useState } from 'react';
 import { CircularProgress } from '../../components/CircleProgress';
 import BlackScreen from '../../components/BlackScreen';
+import { useNavigate } from 'react-router-dom';
 
 const Result = () => {
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
+  const [progress, setProgress] = useState(15);
+  const [result, setResult] = useState(JSON.parse(localStorage.getItem('result')));
+  const [score, setScore] = useState(0);
 
-  const [progress, setProgress] = useState(51);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,21 +29,40 @@ const Result = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const scoreString = result.chat_gpt.split('\n')[0]; // "보이스피싱 점수: 9"
+    setScore(scoreString.replace(/[^0-9]/g, '')); // "9"
+
+    return () => {
+      localStorage.removeItem('result');
+    };
+  }, [result]);
+
+  const goToHome = () => {
+    navigate('/home');
+    localStorage.removeItem('result');
+  };
   return (
     <Container>
       <BlackScreen />
       <Box>
-        <CircularProgress progress={progress} />
-        <h3>해당 통화는 의심스러운 활동이 감지되지 않았습니다.</h3>
+        <CircularProgress progress={`${score}0`} />
+        {result.model_result === '일반' ? (
+          <h3>해당 통화는 의심스러운 활동이 감지되지 않았습니다.</h3>
+        ) : (
+          <h3>해당 통화는 의심스러운 활동이 감지되었습니다.</h3>
+        )}
         <SuspicionBox>
-          <p>의심되는 주요 단어</p>
-          <p>의심되는 주요 문장</p>
-          <p>의심되는 보이스 피싱 목소리 패턴</p>
+          {result.chat_gpt.split('\n').map((line, index) => (
+            <p key={index}>{line}</p>
+          ))}
         </SuspicionBox>
       </Box>
       <ButtonBox buttonstate={progress >= 30 ? 0 : 1}>
         {progress >= 30 && <Button color='#EB5544'>신고</Button>}
-        <Button color='#67CE68'>확인</Button>
+        <Button onClick={goToHome} color='#67CE68'>
+          확인
+        </Button>
       </ButtonBox>
     </Container>
   );
@@ -60,18 +83,21 @@ const Box = styled.div`
   justify-content: center;
   margin: 0 auto;
 
-  margin-top: 5rem;
+  margin-top: 2rem;
 
   h3 {
     font-size: 1rem;
     color: white;
     margin-top: 1rem;
+    font-weight: bold;
+    padding: 0 1rem;
   }
 
   p {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
     color: white;
+    font-weight: bold;
   }
 `;
 
@@ -79,7 +105,9 @@ const SuspicionBox = styled.div`
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
+
+  padding: 0 1rem;
 `;
 
 const ButtonBox = styled.div`

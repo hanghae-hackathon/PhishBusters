@@ -27,8 +27,8 @@ export const CircularProgress = ({ progress }) => {
 const CircleWrapper = styled.div`
   display: inline-block;
   margin: 0 auto;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
 `;
 
 const Svg = styled.svg`
@@ -45,7 +45,7 @@ const CircleBackground = styled.path`
 const CircleForeground = styled.path`
   fill: none;
   stroke-width: 3.8;
-  stroke: ${(props) => (props.progress >= 30 ? '#EB5544' : '#67CE68')};
+  stroke: ${(props) => (props.progress > 30 ? '#EB5544' : '#67CE68')};
   transition: stroke-Dasharray 0.3s;
   stroke-linecap: round;
 `;
@@ -54,4 +54,5 @@ const Text = styled.text`
   fill: white;
   font-size: 0.5em;
   text-anchor: middle;
+  font-weight: bold;
 `;
